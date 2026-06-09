@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, FormEvent } from 'react';
-import { Mail, Phone, MapPin, Loader2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Loader2, Instagram, Linkedin } from 'lucide-react';
 import { useToast } from '../ui/toast';
 import { Service } from '../../types';
 
@@ -136,6 +136,33 @@ export default function ContactSection() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Social channels segment */}
+            <div className="pt-6 border-t border-gold/10">
+              <p className="font-body text-xs text-muted-foreground uppercase tracking-widest mb-3">Connect With Us</p>
+              <div className="flex items-center gap-3">
+                <a
+                  href="https://www.linkedin.com/in/arush-sharma-369318332?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border border-gold/15 bg-secondary/30 hover:border-gold/50 hover:bg-gold/5 text-xs text-muted-foreground hover:text-gold transition-all duration-300 cursor-pointer"
+                  title="Arush Sharma - LinkedIn"
+                >
+                  <Linkedin size={14} className="text-gold" />
+                  <span className="font-body font-medium">LinkedIn</span>
+                </a>
+                <a
+                  href="https://www.instagram.com/asjiweblegal?igsh=dTV6dXN0cTE1MWww"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border border-gold/15 bg-secondary/30 hover:border-gold/50 hover:bg-gold/5 text-xs text-muted-foreground hover:text-gold transition-all duration-300 cursor-pointer"
+                  title="ASJi Web & Legal Solutions - Instagram"
+                >
+                  <Instagram size={14} className="text-gold" />
+                  <span className="font-body font-medium">Instagram</span>
+                </a>
+              </div>
             </div>
           </div>
 

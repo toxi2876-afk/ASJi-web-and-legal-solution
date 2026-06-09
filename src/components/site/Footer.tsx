@@ -1,4 +1,4 @@
-import { Scale, Globe, FileText, TrendingUp } from 'lucide-react';
+import { Scale, Globe, FileText, TrendingUp, Instagram, Linkedin } from 'lucide-react';
 
 const serviceLinks = [
   { icon: Scale, label: "Legal Consulting" },
@@ -35,9 +35,29 @@ export default function Footer() {
                 </p>
               </div>
             </div>
-            <p className="font-body text-sm text-muted-foreground leading-6 max-w-xs">
+            <p className="font-body text-sm text-muted-foreground leading-6 max-w-xs mb-5">
               Ambition · Strategy · Justice · Innovation — delivering our best work to help your business grow digitally and stay protected legally.
             </p>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.linkedin.com/in/arush-sharma-369318332?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full border border-gold/15 flex items-center justify-center text-muted-foreground hover:text-gold hover:border-gold/50 hover:bg-gold/5 transition-all duration-300 cursor-pointer"
+                title="LinkedIn Profile"
+              >
+                <Linkedin size={14} />
+              </a>
+              <a
+                href="https://www.instagram.com/asjiweblegal?igsh=dTV6dXN0cTE1MWww"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-full border border-gold/15 flex items-center justify-center text-muted-foreground hover:text-gold hover:border-gold/50 hover:bg-gold/5 transition-all duration-300 cursor-pointer"
+                title="Instagram Profile"
+              >
+                <Instagram size={14} />
+              </a>
+            </div>
           </div>
 
           {/* Navigation Column */}

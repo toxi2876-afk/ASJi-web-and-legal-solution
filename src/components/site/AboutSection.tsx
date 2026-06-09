@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Scale, Eye, Lightbulb, Handshake } from 'lucide-react';
+import { Scale, Eye, Lightbulb, Handshake, Instagram, Linkedin } from 'lucide-react';
 
 const pillars = [
   {
@@ -132,6 +132,119 @@ export default function AboutSection() {
                 </div>
               );
             })}
+          </div>
+        </div>
+
+        {/* Leadership Section */}
+        <div className="mt-24 reveal section-hidden" style={{ transitionDelay: '0.3s' }}>
+          <div className="text-center mb-12">
+            <span className="text-xs font-mono uppercase tracking-widest text-gold text-gold-shimmer font-semibold">Leadership Duo</span>
+            <h2 className="font-display text-4xl text-foreground font-light mt-2 tracking-wide">Behind Our Vision</h2>
+            <div className="w-16 h-0.5 bg-gold-gradient mx-auto mt-4" />
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+            {/* Arush Sharma - Founder & Principal */}
+            <div className="lg:col-span-2 glass-dark border border-gold/25 rounded-2xl p-8 md:p-10 shadow-gold relative overflow-hidden group transition-all duration-300">
+              {/* Ambient golden background gradients */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-gold/5 rounded-full blur-3xl pointer-events-none group-hover:bg-gold/10 transition-all duration-700" />
+              <div className="absolute bottom-0 left-0 w-60 h-60 bg-[#aa7c11]/5 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="grid md:grid-cols-3 gap-8 items-center relative z-10">
+                {/* Founder Profile Visual */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="relative mb-5">
+                    {/* Elegant Golden Spinning Outer Ring */}
+                    <div className="absolute -inset-2 border border-dashed border-gold/35 rounded-full animate-spin-slow pointer-events-none" style={{ animationDuration: '30s' }} />
+                    <div className="absolute -inset-1 bg-gradient-to-r from-gold/50 via-gold-hover/30 to-[#aa7c11]/50 rounded-full blur opacity-60" />
+                    
+                    {/* Initials Placeholder / Stylish Silhouette */}
+                    <div className="relative w-28 h-28 rounded-full bg-secondary border-2 border-gold/50 flex items-center justify-center shadow-lg overflow-hidden group-hover:border-gold transition-colors duration-500">
+                      <span className="font-display text-3xl text-gold-gradient font-bold tracking-wider">AS</span>
+                    </div>
+                  </div>
+
+                  <h3 className="font-display text-xl text-foreground font-semibold tracking-wide">ARUSH SHARMA</h3>
+                  <p className="font-body text-[10px] text-gold uppercase tracking-widest mt-1">Founder & Principal</p>
+                  <div className="w-10 h-px bg-gold-gradient mx-auto mt-2.5 mb-3.5" />
+
+                  {/* Social profile links */}
+                  <div className="flex items-center gap-3 justify-center">
+                    <a
+                      href="https://www.linkedin.com/in/arush-sharma-369318332?utm_source=share_via&utm_content=profile&utm_medium=member_android"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-full border border-gold/20 text-muted-foreground hover:text-gold hover:border-gold/60 hover:bg-gold/5 transition-all duration-300 cursor-pointer"
+                      title="Arush Sharma - LinkedIn"
+                    >
+                      <Linkedin size={14} />
+                    </a>
+                    <a
+                      href="https://www.instagram.com/asjiweblegal?igsh=dTV6dXN0cTE1MWww"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 rounded-full border border-gold/20 text-muted-foreground hover:text-gold hover:border-gold/60 hover:bg-gold/5 transition-all duration-300 cursor-pointer"
+                      title="ASJi Web & Legal Solutions - Instagram"
+                    >
+                      <Instagram size={14} />
+                    </a>
+                  </div>
+                </div>
+
+                {/* Founder's Vision statement */}
+                <div className="md:col-span-2 space-y-3">
+                  <span className="text-[10px] uppercase tracking-widest text-gold/80 font-body">Founder's Vision</span>
+                  <h4 className="font-display text-2xl md:text-3xl text-foreground font-light leading-snug">
+                    "Uniting absolute <span className="text-gold-gradient font-normal">legal defense</span> with robust, high-performance <span className="text-gold-gradient font-normal font-sans">web architecture</span>."
+                  </h4>
+                  <p className="font-body text-xs text-muted-foreground leading-6">
+                    Under the leadership of <strong className="text-foreground">Arush Sharma</strong>, ASJi was established with a singular, powerful ambition: to bridge the gap between crucial legal compliance and digital growth. ARUSH SHARMA's vision drives our multi-disciplinary approach, ensuring our clients receive top-tier, modern websites and custom software solutions, fully backed by strategic legal advising, airtight document drafting, and targeted marketing campaigns.
+                  </p>
+                  <div className="flex items-center gap-4 pt-1.5 border-t border-gold/10">
+                    <div>
+                      <p className="font-display text-sm text-foreground font-medium">Arush Sharma</p>
+                      <p className="font-body text-[10px] text-muted-foreground">Founder & Managing Director</p>
+                    </div>
+                    <div className="h-6 w-px bg-gold/20" />
+                    <p className="font-body text-[10px] text-muted-foreground italic max-w-xs">
+                      "Tailored litigation protection and rapid software scale for ambitious modern enterprises."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Saksham Sharma - Co-Founder */}
+            <div className="lg:col-span-1 glass-dark border border-gold/20 hover:border-gold/40 rounded-2xl p-8 shadow-gold relative overflow-hidden group transition-all duration-300 flex flex-col justify-between">
+              {/* Ambient golden background gradients */}
+              <div className="absolute top-0 right-0 w-60 h-60 bg-gold/5 rounded-full blur-2xl pointer-events-none group-hover:bg-gold/8 transition-all duration-500" />
+              
+              <div className="relative z-10 flex flex-col items-center text-center my-auto">
+                <div className="relative mb-5">
+                  {/* Elegant Golden Spinning Outer Ring */}
+                  <div className="absolute -inset-2 border border-dotted border-gold/25 rounded-full animate-spin-slow pointer-events-none" style={{ animationDuration: '25s', animationDirection: 'reverse' }} />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-gold/30 to-[#aa7c11]/30 rounded-full blur opacity-40" />
+                  
+                  {/* Monogram profile visual */}
+                  <div className="relative w-28 h-28 rounded-full bg-secondary border-2 border-gold/30 flex items-center justify-center shadow-md overflow-hidden group-hover:border-gold/70 transition-colors duration-500">
+                    <span className="font-display text-3xl text-gold-gradient font-bold tracking-wider">SS</span>
+                  </div>
+                </div>
+
+                <h3 className="font-display text-xl text-foreground font-semibold tracking-wide">SAKSHAM SHARMA</h3>
+                <p className="font-body text-[10px] text-gold uppercase tracking-widest mt-1">Co-Founder</p>
+                <div className="w-10 h-px bg-gold-gradient mx-auto mt-2.5 mb-4" />
+
+                <p className="font-body text-xs text-muted-foreground leading-6 px-2">
+                  Partnering closely in driving ASJi forward. Saksham leverages corporate synergy and technical oversight, ensuring seamless coordination between elite web delivery and crucial regulatory counsel to support our partners' secure digital scale.
+                </p>
+              </div>
+
+              {/* Quick links footer */}
+              <div className="relative z-10 border-t border-gold/10 pt-4 mt-6 flex items-center justify-center gap-3">
+                <span className="text-[9px] uppercase tracking-widest text-muted-foreground/80 font-mono">Operations & Synergy</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
