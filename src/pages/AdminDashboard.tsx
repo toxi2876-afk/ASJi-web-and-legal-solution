@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '../components/ui/toast';
 import { Service, Inquiry } from '../types';
+import { apiService } from '../lib/api';
 
 export default function AdminDashboardPage() {
   const [activeTab, setActiveTab] = useState<'inquiries' | 'services'>('inquiries');
@@ -67,8 +68,7 @@ export default function AdminDashboardPage() {
   // Fetch all inquiries and services
   const fetchInquiries = () => {
     setLoadingInquiries(true);
-    fetch('/api/inquiries')
-      .then((res) => res.json())
+    apiService.getInquiries()
       .then((data) => {
         setInquiries(data);
         setLoadingInquiries(false);
@@ -82,8 +82,7 @@ export default function AdminDashboardPage() {
 
   const fetchServices = () => {
     setLoadingServices(true);
-    fetch('/api/services')
-      .then((res) => res.json())
+    apiService.getServices()
       .then((data) => {
         setServices(data);
         setLoadingServices(false);
@@ -114,23 +113,15 @@ export default function AdminDashboardPage() {
   const handleUpdateInquiryStatus = async (id: number, currentStatus: string) => {
     const nextStatus = currentStatus === 'New' ? 'Contacted' : currentStatus === 'Contacted' ? 'Closed' : 'New';
     try {
-      const response = await fetch(`/api/inquiries/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: nextStatus })
+      const updated = await apiService.updateInquiryStatus(id, nextStatus as any);
+      setInquiries(updated);
+      toast({
+        title: "Status Updated",
+        description: `Inquiry status changed to ${nextStatus}.`,
+        type: "success"
       });
-      if (response.ok) {
-        toast({
-          title: "Status Updated",
-          description: `Inquiry status changed to ${nextStatus}.`,
-          type: "success"
-        });
-        fetchInquiries();
-      } else {
-        throw new Error();
-      }
     } catch {
-      toast({ title: "Update Failed", description: "Coult not update status on server.", type: "error" });
+      toast({ title: "Update Failed", description: "Could not update status.", type: "error" });
     }
   };
 
@@ -138,21 +129,15 @@ export default function AdminDashboardPage() {
   const handleDeleteInquiry = async (id: number) => {
     if (!confirm("Are you sure you want to delete this inquiry?")) return;
     try {
-      const response = await fetch(`/api/inquiries/${id}`, {
-        method: 'DELETE'
+      const updated = await apiService.deleteInquiry(id);
+      setInquiries(updated);
+      toast({
+        title: "Inquiry Deleted",
+        description: "Inquiry removed from system.",
+        type: "warning"
       });
-      if (response.ok) {
-        toast({
-          title: "Inquiry Deleted",
-          description: "Inquiry removed from database.",
-          type: "warning"
-        });
-        fetchInquiries();
-      } else {
-        throw new Error();
-      }
     } catch {
-      toast({ title: "Deletion Failed", description: "Could not delete from database.", type: "error" });
+      toast({ title: "Deletion Failed", description: "Could not delete inquiry.", type: "error" });
     }
   };
 
@@ -175,7 +160,7 @@ export default function AdminDashboardPage() {
 
     const newService = {
       title: serviceForm.title,
-      icon: serviceForm.icon,
+      icon: serviceForm.icon as any,
       shortDesc: serviceForm.shortDesc,
       fullDesc: serviceForm.fullDesc,
       features: splitFeatures,
@@ -183,32 +168,24 @@ export default function AdminDashboardPage() {
     };
 
     try {
-      const response = await fetch('/api/services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newService)
+      const updated = await apiService.addService(newService);
+      setServices(updated);
+      toast({
+        title: "Service Added",
+        description: "Successfully added and synchronized.",
+        type: "success"
       });
-
-      if (response.ok) {
-        toast({
-          title: "Service Added",
-          description: "Successfully added to persistent database.",
-          type: "success"
-        });
-        setServiceForm({
-          title: '',
-          icon: 'Scale',
-          shortDesc: '',
-          fullDesc: '',
-          featuresInput: '',
-          color: '#D4AF37'
-        });
-        fetchServices();
-      } else {
-        throw new Error();
-      }
-    } catch {
-      toast({ title: "Creation Failed", description: "Could not configure new service on server.", type: "error" });
+      setServiceForm({
+        title: '',
+        icon: 'Scale',
+        shortDesc: '',
+        fullDesc: '',
+        featuresInput: '',
+        color: '#D4AF37'
+      });
+    } catch (err) {
+      console.error(err);
+      toast({ title: "Creation Failed", description: "Could not configure new service.", type: "error" });
     } finally {
       setSubmittingService(false);
     }
@@ -218,21 +195,15 @@ export default function AdminDashboardPage() {
   const handleDeleteService = async (id: number) => {
     if (!confirm("Are you sure you want to delete this service? All frontend instances will shift immediately.")) return;
     try {
-      const response = await fetch(`/api/services/${id}`, {
-        method: 'DELETE'
+      const updated = await apiService.deleteService(id);
+      setServices(updated);
+      toast({
+        title: "Service Removed",
+        description: "Service has been removed.",
+        type: "warning"
       });
-      if (response.ok) {
-        toast({
-          title: "Service Removed",
-          description: "Removed from database configuration.",
-          type: "warning"
-        });
-        fetchServices();
-      } else {
-        throw new Error();
-      }
     } catch {
-      toast({ title: "Removal Failed", description: "Failed to remove the service configuration.", type: "error" });
+      toast({ title: "Removal Failed", description: "Failed to remove the service.", type: "error" });
     }
   };
 
@@ -260,7 +231,7 @@ export default function AdminDashboardPage() {
 
     const updatedService = {
       title: editForm.title,
-      icon: editForm.icon,
+      icon: editForm.icon as any,
       shortDesc: editForm.shortDesc,
       fullDesc: editForm.fullDesc,
       features: splitFeatures,
@@ -268,25 +239,16 @@ export default function AdminDashboardPage() {
     };
 
     try {
-      const response = await fetch(`/api/services/${editingServiceId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedService)
+      const updated = await apiService.updateService(editingServiceId, updatedService);
+      setServices(updated);
+      toast({
+        title: "Service Saved",
+        description: "Updates saved successfully.",
+        type: "success"
       });
-
-      if (response.ok) {
-        toast({
-          title: "Service Saved",
-          description: "Updates synchronized on persistent database.",
-          type: "success"
-        });
-        setEditingServiceId(null);
-        fetchServices();
-      } else {
-        throw new Error();
-      }
+      setEditingServiceId(null);
     } catch {
-      toast({ title: "Save Failed", description: "Failed to update service database node.", type: "error" });
+      toast({ title: "Save Failed", description: "Failed to update service.", type: "error" });
     }
   };
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, FormEvent } from 'react';
 import { Mail, Phone, MapPin, Loader2, Instagram, Linkedin } from 'lucide-react';
 import { useToast } from '../ui/toast';
 import { Service } from '../../types';
-import { fallbackServices } from './ServicesSection';
+import { apiService } from '../../lib/api';
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "axbz.0626@gmail.com" },
@@ -24,25 +24,12 @@ export default function ContactSection() {
 
   useEffect(() => {
     // Dynamic services fetch to populate selection options
-    fetch('/api/services')
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('API server returned error status');
-        }
-        return res.json();
-      })
+    apiService.getServices()
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setServices(data);
-        } else if (data && Array.isArray(data.services) && data.services.length > 0) {
-          setServices(data.services);
-        } else {
-          setServices(fallbackServices);
-        }
+        setServices(data);
       })
       .catch((err) => {
-        console.warn('API is unavailable, using local services list for contact form dropdown:', err);
-        setServices(fallbackServices);
+        console.error('Failed to get services for contact form:', err);
       });
 
     const observer = new IntersectionObserver(
@@ -79,22 +66,13 @@ export default function ContactSection() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+      await apiService.addInquiry(formData);
+      setFormData({ name: "", email: "", service: "", message: "" });
+      toast({
+        title: "Message Sent!",
+        description: "We'll get back to you within 24 hours.",
+        type: "success"
       });
-
-      if (response.ok) {
-        setFormData({ name: "", email: "", service: "", message: "" });
-        toast({
-          title: "Message Sent!",
-          description: "We'll get back to you within 24 hours.",
-          type: "success"
-        });
-      } else {
-        throw new Error('Server error');
-      }
     } catch (err) {
       console.error(err);
       toast({
