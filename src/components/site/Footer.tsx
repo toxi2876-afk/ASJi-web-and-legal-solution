@@ -103,9 +103,9 @@ export default function Footer() {
 
         {/* Bottom copyright segment */}
         <div className="border-t border-gold/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="font-body text-xs text-muted-foreground text-center sm:text-left">
-            © {new Date().getFullYear()} ASJi Legal and Web Solutions. All rights reserved.
-          </p>
+          <div className="font-body text-xs text-muted-foreground text-center sm:text-left flex items-center gap-2 justify-center sm:justify-start">
+            <span>© {new Date().getFullYear()} ASJi Legal and Web Solutions. All rights reserved.</span>
+          </div>
           <p className="font-body text-xs text-muted-foreground text-center sm:text-right italic">
             Building businesses digitally · Protecting them legally
           </p>

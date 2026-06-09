@@ -23,12 +23,8 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     setTimeout(() => {
-      // Direct local authentication or mock server response
-      if (
-        (username === 'admin' && password === 'admin') ||
-        (username === 'admin' && password === 'adminasji') ||
-        password === 'adminasji'
-      ) {
+      // Direct local authentication with specified credentials
+      if (username === 'ASJi' && password === 'Asji0626') {
         localStorage.setItem('asji_admin_token', 'authenticated_session');
         toast({
           title: "Welcome Back",
@@ -95,7 +91,7 @@ export default function AdminLoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="ASJi"
                   className="w-full bg-secondary/30 border border-gold/15 rounded pl-10 pr-4 py-3 text-sm text-foreground focus:outline-none focus:border-gold/50 transition-colors"
                 />
               </div>
@@ -114,7 +110,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="adminasji"
+                  placeholder="Asji0626"
                   className="w-full bg-secondary/30 border border-gold/15 rounded pl-10 pr-10 py-3 text-sm text-foreground focus:outline-none focus:border-gold/50 transition-colors"
                 />
                 <button
@@ -139,8 +135,8 @@ export default function AdminLoginPage() {
           {/* Prompt Credentials for easy access */}
           <div className="mt-6 pt-6 border-t border-gold/10 text-center">
             <p className="text-xs text-muted-foreground">
-              Demo Credentials:{" "}
-              <span className="text-gold font-mono">admin / adminasji</span>
+              Portal Credentials:{" "}
+              <span className="text-gold font-mono">ASJi / Asji0626</span>
             </p>
           </div>
         </div>

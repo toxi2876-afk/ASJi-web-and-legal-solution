@@ -212,6 +212,14 @@ app.put('/api/inquiries/:id', (req, res) => {
   res.json({ success: true, inquiries: db.inquiries });
 });
 
+app.delete('/api/inquiries/:id', (req, res) => {
+  const db = readDB();
+  const idToDelete = Number(req.params.id);
+  db.inquiries = db.inquiries.filter((iq: any) => iq.id !== idToDelete);
+  writeDB(db);
+  res.json({ success: true, inquiries: db.inquiries });
+});
+
 // Vite server setup
 async function start() {
   if (process.env.NODE_ENV !== "production") {
