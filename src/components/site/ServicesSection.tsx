@@ -9,6 +9,45 @@ const iconMap = {
   TrendingUp,
 };
 
+export const fallbackServices: Service[] = [
+  {
+    id: 1,
+    title: "Legal Consulting",
+    icon: "Scale",
+    shortDesc: "Expert legal guidance for individuals and businesses.",
+    fullDesc: "Our experienced legal consultants provide comprehensive advisory services covering corporate law, contracts, compliance, and dispute resolution. We ensure your legal interests are fully protected.",
+    features: ["Corporate Law", "Contract Review", "Dispute Resolution", "Regulatory Compliance"],
+    color: "#C9A84C"
+  },
+  {
+    id: 2,
+    title: "Web Development",
+    icon: "Globe",
+    shortDesc: "Modern, responsive websites and web applications.",
+    fullDesc: "We build stunning, high-performance websites and web applications tailored to your business needs (led by Arush Sharma and Saksham Sharma). From landing pages to complex platforms, we deliver digital excellence.",
+    features: ["Custom Design", "Responsive UI", "E-commerce", "CMS Integration"],
+    color: "#C9A84C"
+  },
+  {
+    id: 3,
+    title: "Document Drafting",
+    icon: "FileText",
+    shortDesc: "Professional legal documents crafted with precision.",
+    fullDesc: "Our legal experts draft, review, and finalize all types of legal documents including agreements, MOUs, NDAs, employment contracts, and corporate resolutions with meticulous attention to detail.",
+    features: ["Agreements & Contracts", "MOUs & NDAs", "Employment Contracts", "Corporate Resolutions"],
+    color: "#C9A84C"
+  },
+  {
+    id: 4,
+    title: "SEO & Digital Marketing",
+    icon: "TrendingUp",
+    shortDesc: "Grow your online presence and reach your audience.",
+    fullDesc: "We help businesses dominate search rankings and expand their digital footprint. Our data-driven SEO and marketing strategies deliver measurable results and sustained growth.",
+    features: ["SEO Optimization", "Content Strategy", "Social Media", "Analytics & Reporting"],
+    color: "#C9A84C"
+  }
+];
+
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [services, setServices] = useState<Service[]>([]);
@@ -17,13 +56,25 @@ export default function ServicesSection() {
   useEffect(() => {
     // Fetch from real database API
     fetch('/api/services')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('API server returned error status');
+        }
+        return res.json();
+      })
       .then((data) => {
-        setServices(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setServices(data);
+        } else if (data && Array.isArray(data.services) && data.services.length > 0) {
+          setServices(data.services);
+        } else {
+          setServices(fallbackServices);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching services', err);
+        console.warn('API is unavailable or returned an error, falling back to static services content:', err);
+        setServices(fallbackServices);
         setLoading(false);
       });
   }, []);

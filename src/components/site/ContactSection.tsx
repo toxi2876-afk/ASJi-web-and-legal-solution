@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, FormEvent } from 'react';
 import { Mail, Phone, MapPin, Loader2, Instagram, Linkedin } from 'lucide-react';
 import { useToast } from '../ui/toast';
 import { Service } from '../../types';
+import { fallbackServices } from './ServicesSection';
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "axbz.0626@gmail.com" },
@@ -24,9 +25,25 @@ export default function ContactSection() {
   useEffect(() => {
     // Dynamic services fetch to populate selection options
     fetch('/api/services')
-      .then((res) => res.json())
-      .then((data) => setServices(data))
-      .catch((err) => console.error('Error fetching services for contact dropdown', err));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('API server returned error status');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setServices(data);
+        } else if (data && Array.isArray(data.services) && data.services.length > 0) {
+          setServices(data.services);
+        } else {
+          setServices(fallbackServices);
+        }
+      })
+      .catch((err) => {
+        console.warn('API is unavailable, using local services list for contact form dropdown:', err);
+        setServices(fallbackServices);
+      });
 
     const observer = new IntersectionObserver(
       (entries) => {
