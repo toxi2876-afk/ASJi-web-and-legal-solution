@@ -1,11 +1,14 @@
 export interface Service {
   id: number;
   title: string;
-  icon: 'Scale' | 'Globe' | 'FileText' | 'TrendingUp';
+  icon: string;
   shortDesc: string;
   fullDesc: string;
   features: string[];
   color?: string;
+  category?: string;
+  price?: string;
+  isPopular?: boolean;
 }
 
 export interface Inquiry {
@@ -24,4 +27,9 @@ export interface PortfolioItem {
   category: string;
   description: string;
   image: string;
+  link?: string;
+  technologies?: string[];
+  metrics?: { label: string; value: string }[];
+  longDescription?: string;
+  mockAppType?: 'portal' | 'marketplace' | 'editor' | 'charts' | 'website' | 'advisor';
 }

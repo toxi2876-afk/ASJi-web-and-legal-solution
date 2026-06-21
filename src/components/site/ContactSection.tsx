@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState, FormEvent } from 'react';
-import { Mail, Phone, MapPin, Loader2, Instagram, Linkedin } from 'lucide-react';
-import { useToast } from '../ui/toast';
-import { Service } from '../../types';
-import { apiService } from '../../lib/api';
+import { useEffect, useRef } from 'react';
+import { Mail, Phone, MapPin, Instagram, Linkedin } from 'lucide-react';
+import ContactForm from './ContactForm';
 
 const contactInfo = [
   { icon: Mail, label: "Email", value: "axbz.0626@gmail.com" },
@@ -12,26 +10,8 @@ const contactInfo = [
 
 export default function ContactSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
-  const [services, setServices] = useState<Service[]>([]);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    service: "",
-    message: ""
-  });
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Dynamic services fetch to populate selection options
-    apiService.getServices()
-      .then((data) => {
-        setServices(data);
-      })
-      .catch((err) => {
-        console.error('Failed to get services for contact form:', err);
-      });
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -51,39 +31,6 @@ export default function ContactSection() {
 
     return () => observer.disconnect();
   }, []);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill out all required fields.",
-        type: "error"
-      });
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      await apiService.addInquiry(formData);
-      setFormData({ name: "", email: "", service: "", message: "" });
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you within 24 hours.",
-        type: "success"
-      });
-    } catch (err) {
-      console.error(err);
-      toast({
-        title: "Submission Failed",
-        description: "Something went wrong. Please try again.",
-        type: "error"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <section id="contact" ref={containerRef} className="relative py-32 overflow-hidden">
@@ -163,84 +110,7 @@ export default function ContactSection() {
 
           {/* Inquiry Form Column */}
           <div className="reveal section-hidden" style={{ transitionDelay: "0.25s" }}>
-            <form onSubmit={handleSubmit} className="glass-dark border border-gold/15 rounded-xl p-8 space-y-6">
-              <div className="grid sm:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-muted-foreground font-body mb-2">
-                    Name <span className="text-gold">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                    placeholder="Your name"
-                    className="w-full bg-secondary/30 border border-gold/15 rounded px-4 py-3 text-sm font-body text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-gold/50 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs uppercase tracking-wider text-muted-foreground font-body mb-2">
-                    Email <span className="text-gold">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                    placeholder="Your email"
-                    className="w-full bg-secondary/30 border border-gold/15 rounded px-4 py-3 text-sm font-body text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-gold/50 transition-colors"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-muted-foreground font-body mb-2">
-                  Requested Service
-                </label>
-                <select
-                  value={formData.service}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, service: e.target.value }))}
-                  className="w-full bg-[#141820] border border-gold/15 rounded px-4 py-3 text-sm font-body text-foreground select-dark focus:outline-none focus:border-gold/50 transition-colors cursor-pointer"
-                >
-                  <option value="">Select a service...</option>
-                  {services.map((item) => (
-                    <option key={item.id} value={item.title}>
-                      {item.title}
-                    </option>
-                  ))}
-                  <option value="General inquiry">General Inquiry</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs uppercase tracking-wider text-muted-foreground font-body mb-2">
-                  Message <span className="text-gold">*</span>
-                </label>
-                <textarea
-                  required
-                  rows={4}
-                  value={formData.message}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-                  placeholder="Tell us about your project/needs..."
-                  className="w-full bg-secondary/30 border border-gold/15 rounded px-4 py-3 text-sm font-body text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-gold/50 transition-colors resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 bg-gold-gradient text-primary-foreground font-body text-xs font-semibold uppercase tracking-widest py-4 rounded hover:opacity-95 transition-opacity duration-300 disabled:opacity-50 cursor-pointer shadow-gold"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 size={16} className="animate-spin" />
-                    Sending Message...
-                  </>
-                ) : (
-                  "Send Message"
-                )}
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </div>

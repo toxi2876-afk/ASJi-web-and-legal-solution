@@ -1,17 +1,60 @@
 import { useEffect, useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 
 const navLinks = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
   { label: "Portfolio", href: "#portfolio" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" }
 ];
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
+    const initialTheme = savedTheme || 'dark';
+    setTheme(initialTheme);
+    if (initialTheme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    if (newTheme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+    
+    // Play a premium soft high-frequency feedback chime
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        const ctx = new AudioContextClass();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(newTheme === 'light' ? 880 : 440, ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      }
+    } catch (_) {}
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,29 +97,47 @@ export default function Navbar() {
               referrerPolicy="no-referrer"
             />
           </div>
-          <span className="font-display text-2xl font-semibold text-gold-gradient hidden sm:block tracking-wide">
-            ASJi
-          </span>
         </a>
 
         {/* desktop nav */}
-        <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <li key={link.label}>
-              <button
-                onClick={() => handleScrollTo(link.href)}
-                className="font-body text-sm text-foreground/70 hover:text-gold transition-colors duration-300 tracking-wide uppercase cursor-pointer"
-              >
-                {link.label}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="hidden md:flex items-center gap-6">
+          <ul className="flex items-center gap-4">
+            {navLinks.map((link) => (
+              <li key={link.label}>
+                <button
+                  onClick={() => handleScrollTo(link.href)}
+                  className="font-body text-sm text-foreground/70 hover:text-gold transition-colors duration-300 tracking-wide uppercase cursor-pointer"
+                >
+                  {link.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          {/* THEME TOGGLE BUTTON */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg border border-gold/15 hover:border-gold/40 hover:bg-gold/5 text-gold transition-all duration-300 cursor-pointer flex items-center justify-center"
+            title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle visual theme"
+          >
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+        </div>
 
         {/* mobile menu icon */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <button
-            className="md:hidden text-foreground cursor-pointer"
+            onClick={toggleTheme}
+            className="md:hidden p-2 rounded-lg border border-gold/15 hover:border-gold/30 hover:bg-gold/5 text-gold transition-all cursor-pointer flex items-center justify-center animate-fade-in"
+            title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle visual theme"
+          >
+            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+
+          <button
+            className="md:hidden text-foreground cursor-pointer p-1"
             onClick={() => setIsOpen(!isOpen)}
           >
             {isOpen ? <X size={22} /> : <Menu size={22} />}
