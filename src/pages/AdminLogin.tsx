@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="ASJi"
+                  placeholder="Enter your username"
                   className="w-full bg-secondary/30 border border-gold/15 rounded pl-10 pr-4 py-3 text-sm text-foreground focus:outline-none focus:border-gold/50 transition-colors"
                 />
               </div>
@@ -110,7 +110,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Asji0626"
+                  placeholder="••••••••"
                   className="w-full bg-secondary/30 border border-gold/15 rounded pl-10 pr-10 py-3 text-sm text-foreground focus:outline-none focus:border-gold/50 transition-colors"
                 />
                 <button
@@ -131,14 +131,6 @@ export default function AdminLoginPage() {
               {loading ? "Authenticating..." : "Sign In"}
             </button>
           </form>
-
-          {/* Prompt Credentials for easy access */}
-          <div className="mt-6 pt-6 border-t border-gold/10 text-center">
-            <p className="text-xs text-muted-foreground">
-              Portal Credentials:{" "}
-              <span className="text-gold font-mono">ASJi / Asji0626</span>
-            </p>
-          </div>
         </div>
       </div>
     </div>

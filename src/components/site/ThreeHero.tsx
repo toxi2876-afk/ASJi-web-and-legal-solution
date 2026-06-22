@@ -1,6 +1,35 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+class ThreeTimer {
+  private _startTime: number;
+  private _currentTime: number;
+  private _delta: number;
+  private _elapsed: number;
+
+  constructor() {
+    this._startTime = performance.now();
+    this._currentTime = this._startTime;
+    this._delta = 0;
+    this._elapsed = 0;
+  }
+
+  getDelta(): number {
+    return this._delta;
+  }
+
+  getElapsed(): number {
+    return this._elapsed;
+  }
+
+  update(timestamp?: number): void {
+    const time = timestamp !== undefined ? timestamp : performance.now();
+    this._delta = (time - this._currentTime) / 1000;
+    this._currentTime = time;
+    this._elapsed = (time - this._startTime) / 1000;
+  }
+}
+
 export default function ThreeHero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -236,11 +265,12 @@ export default function ThreeHero() {
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     let animationFrameId: number;
-    const clock = new THREE.Clock();
+    const timer = new ThreeTimer();
 
-    const animate = () => {
+    const animate = (timestamp: number = performance.now()) => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+      timer.update(timestamp);
+      const elapsedTime = timer.getElapsed();
 
       // Smooth camera looking lookups
       mouse.x += (targetMouse.x - mouse.x) * 0.05;

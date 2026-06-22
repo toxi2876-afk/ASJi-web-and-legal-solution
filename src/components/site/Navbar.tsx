@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -15,6 +16,8 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'dark' | 'light' | null;
@@ -66,6 +69,23 @@ export default function Navbar() {
 
   const handleScrollTo = (selector: string) => {
     setIsOpen(false);
+    if (selector.startsWith('/')) {
+      navigate(selector);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.querySelector(selector);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 150);
+      return;
+    }
+
     const element = document.querySelector(selector);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

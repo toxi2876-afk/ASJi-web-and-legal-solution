@@ -1,7 +1,9 @@
 import ThreeHero from './ThreeHero';
 import { ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   const scrollOffset = (selector: string) => {
     document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -100,16 +102,16 @@ export default function HeroSection() {
           We help you build a powerful digital presence while keeping your business legally protected — from day one.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
             onClick={() => scrollOffset('#services')}
-            className="bg-gold-gradient text-primary-foreground font-body font-medium px-8 py-3.5 rounded text-sm uppercase tracking-widest hover:opacity-90 transition-all duration-300 shadow-gold animate-pulse-gold cursor-pointer"
+            className="w-full sm:w-auto bg-gold-gradient text-primary-foreground font-body font-medium px-8 py-3.5 rounded text-sm uppercase tracking-widest hover:opacity-90 transition-all duration-300 shadow-gold animate-pulse-gold cursor-pointer text-center"
           >
             Our Services
           </button>
           <button
             onClick={() => scrollOffset('#contact')}
-            className="glass-gold text-gold font-body font-medium px-8 py-3.5 rounded text-sm uppercase tracking-widest hover:bg-gold/15 transition-all duration-300 cursor-pointer"
+            className="w-full sm:w-auto glass-gold text-gold font-body font-medium px-8 py-3.5 rounded text-sm uppercase tracking-widest hover:bg-gold/15 transition-all duration-300 cursor-pointer text-center"
           >
             Get In Touch
           </button>

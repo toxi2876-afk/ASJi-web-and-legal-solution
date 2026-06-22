@@ -1,4 +1,5 @@
 import { Scale, Globe, FileText, TrendingUp, Instagram, Linkedin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const serviceLinks = [
   { icon: Scale, label: "Legal Consulting" },
@@ -8,7 +9,13 @@ const serviceLinks = [
 ];
 
 export default function Footer() {
+  const navigate = useNavigate();
   const handleScrollTo = (selector: string) => {
+    if (selector.startsWith('/')) {
+      navigate(selector);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     document.querySelector(selector)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -71,6 +78,7 @@ export default function Footer() {
                 ["About", "#about"],
                 ["Services", "#services"],
                 ["Portfolio", "#portfolio"],
+                ["Company Profile", "/profile"],
                 ["Contact", "#contact"]
               ].map(([label, href]) => (
                 <li key={label}>
