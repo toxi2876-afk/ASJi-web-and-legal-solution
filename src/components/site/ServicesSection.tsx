@@ -206,14 +206,13 @@ export default function ServicesSection() {
 
                         {/* Bottom section: Price and Action */}
                         <div className="border-t border-gold/5 pt-4 mt-2">
-                          <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mb-1.5">
-                            Pricing Structure
+                          <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest mb-1">
+                            Investment Point
                           </div>
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/5 border border-gold/15 text-[10px] text-gold/90 font-mono uppercase tracking-wider">
-                            <span className="w-1.5 h-1.5 bg-gold rounded-full animate-ping" />
-                            Hover to Reveal
+                          <div className="text-base font-display text-gold font-semibold tracking-tight">
+                            {item.price || "₹499"}
                           </div>
-                          <div className="text-[10px] text-gold/60 font-mono uppercase tracking-widest mt-3 hover:underline cursor-pointer">
+                          <div className="text-[10px] text-gold/60 font-mono uppercase tracking-widest mt-2 hover:underline cursor-pointer">
                             View Details &amp; Price &rarr;
                           </div>
                         </div>
@@ -330,13 +329,9 @@ export default function ServicesSection() {
                               <div className="flex md:flex-col items-end md:justify-start justify-between w-full md:w-auto border-t md:border-t-0 border-gold/5 pt-4 md:pt-0 gap-2">
                                 <div className="text-right flex flex-col items-end relative min-w-[80px]">
                                   <span className="text-[9px] uppercase font-mono tracking-widest text-muted-foreground mb-0.5">Starting At</span>
-                                  <div className="relative group/price">
-                                    <span className="text-xl font-display font-light text-gold-gradient text-gold font-semibold transition-all duration-300 blur-[6px] select-none group-hover:blur-0">
+                                  <div className="relative">
+                                    <span className="text-xl font-display text-gold font-semibold transition-all duration-300">
                                       {service.price || "₹499"}
-                                    </span>
-                                    {/* Small elegant overlay badge to trigger hover curiosity */}
-                                    <span className="absolute inset-x-0 inset-y-0 flex items-center justify-center text-[8px] font-mono tracking-tighter text-gold bg-black/40 border border-gold/20 rounded px-1 py-0.5 transition-all duration-300 pointer-events-none group-hover:opacity-0 group-hover:scale-90">
-                                      Hover Price
                                     </span>
                                   </div>
                                 </div>

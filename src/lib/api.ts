@@ -354,7 +354,7 @@ export const apiService = {
   // SERVICES ENDPOINTS
   getServices: async (): Promise<Service[]> => {
     try {
-      const res = await fetch('/api/services');
+      const res = await fetch(`/api/services?t=${Date.now()}`);
       if (!res.ok) throw new Error('API server unavailable');
       const data = await res.json();
       if (Array.isArray(data)) return data;
@@ -432,7 +432,7 @@ export const apiService = {
   // INQUIRIES ENDPOINTS
   getInquiries: async (): Promise<Inquiry[]> => {
     try {
-      const res = await fetch('/api/inquiries');
+      const res = await fetch(`/api/inquiries?t=${Date.now()}`);
       if (!res.ok) throw new Error('API inquiry fetch failed');
       const data = await res.json();
       if (Array.isArray(data)) return data;
@@ -481,7 +481,7 @@ export const apiService = {
 
   getSMSNotifications: async (): Promise<any[]> => {
     try {
-      const res = await fetch('/api/notifications');
+      const res = await fetch(`/api/notifications?t=${Date.now()}`);
       if (!res.ok) throw new Error('API notifications fetch failed');
       const data = await res.json();
       if (Array.isArray(data)) return data;

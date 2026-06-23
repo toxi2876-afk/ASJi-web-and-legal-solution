@@ -538,6 +538,11 @@ function writeDB(data: any) {
 }
 
 // REST API routes FIRST
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  next();
+});
+
 app.get('/api/services', (req, res) => {
   const db = readDB();
   res.json(db.services);
@@ -547,14 +552,15 @@ app.post('/api/services', (req, res) => {
   const db = readDB();
   const rawService = req.body;
 
-  if (rawService.id) {
+  const exists = db.services.some((s: any) => s.id === Number(rawService.id));
+  if (rawService.id && exists) {
     // Update existing
     db.services = db.services.map((s: any) => s.id === Number(rawService.id) ? { ...s, ...rawService } : s);
   } else {
     // Add new
     const newService = {
       ...rawService,
-      id: Date.now()
+      id: rawService.id ? Number(rawService.id) : Date.now()
     };
     db.services.push(newService);
   }
@@ -648,56 +654,86 @@ app.post('/api/ai/chat', async (req, res) => {
 
   try {
     const ai = getAIClient();
-    let chatResponse;
+    let chatResponse: any = null;
     let sources: any[] = [];
-    
-    try {
-      // Attempt chat session with Google Search grounding and automatic retry-with-backoff
-      const chat = ai.chats.create({
-        model: "gemini-2.5-flash",
-        config: {
-          systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Master Consultant, Legal Researcher, and Scientific Advisor equipped with real-time web search grounding.
-You provide extremely precise, fast, elegant, and highly helpful answers to ANY question. This includes authoritative research on Indian business laws, MCA statutory requirements (Company/LLP), Indian Tax regimes (GST, LUT zero-rating, Income Tax Act, 80-IAC Startup Holiday), Indian Contract Act, IT Act, and RBI/FEMA regulations, alongside Global International Standards (such as US/Delaware C-Corp, GDPR/CCPA compliance, cross-border Service Level Agreements, and global tech architecture).
-No matter what question is asked, answer beautifully, direct, and fast with absolute accuracy. Combine deep reasoning with real-time web search grounding to fetch the most up-to-date facts, legal precedents, or technical standards. Always search the web when asked about law, case regulations, or real-time facts to ensure high accuracy. Mention sources where appropriate.
+    let succeeded = false;
+    let errorLog: string[] = [];
+
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
+
+    // Phase A: Attempt chat session with Google Search grounding
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[AI Hub] Attempting chat with model: ${modelName} (Search Grounded)`);
+        const chat = ai.chats.create({
+          model: modelName,
+          config: {
+            systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Specialist, Tech Consultant, and General Knowledge Sovereign Advisor equipped with real-time web search grounding.
+You provide extremely precise, fast, elegant, and highly helpful answers to ANY question or request, just like ChatGPT or Claude. This includes software development & debugging (React, TypeScript, Python, etc.), responsive visual layout designs, mathematical reasoning, translations, travel planning, marketing strategies, and academic topics, as well as specialized professional/business consultation when requested.
+No matter what question is asked, answer beautifully, directly, and fast with absolute accuracy. Combine deep reasoning with real-time web search grounding to fetch the most up-to-date facts, legal precedents, or technical standards. Always search the web when asked about real-time facts or technical specifications to ensure maximum accuracy. Mention sources with URLs where appropriate.
 CRITICAL RULE ON BRANDING: Avoid talking about 'ASJi', 'Arush Sharma', or 'Saksham Sharma' in the main body of your reply. Focus purely on guiding the client neutrally with the best answers. ONLY at the absolute end of your answer, write:
 ---
 *Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*`,
-          tools: [{ googleSearch: {} }]
-        },
-        history: history || []
-      });
+            tools: [{ googleSearch: {} }]
+          },
+          history: history || []
+        });
 
-      chatResponse = await retryWithBackoff(() => chat.sendMessage({ message }), 1, 600);
-      
-      // Extract search grounding metadata sources
-      const chunks = chatResponse.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-      sources = chunks
-         .map((chunk: any) => ({
-          title: chunk.web?.title || chunk.web?.uri || "Web Source",
-          uri: chunk.web?.uri
-        }))
-        .filter((source: any) => source.uri);
-    } catch (groundingError: any) {
-      console.log("[Advisory Engine Network Status] Routing chat using secure local replica model...");
-      
-      // Fallback pathway with zero tool dependencies and backoff retries to guarantee uptime
-      const fallbackChat = ai.chats.create({
-        model: "gemini-2.5-flash",
-        config: {
-          systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Master Consultant, Legal Researcher, and Scientific Advisor.
-You provide extremely precise, fast, elegant, and highly helpful answers to ANY query. You help with authoritative research on Indian business laws, MCA corporate setups, Indian tax guidelines (GST, LUT, 80-IAC, IT Act), FEMA compliance, as well as International Standards (such as Delaware C-Corp, GDPR compliance, cross-border Service Level Agreements, and general software system layouts) with supreme precision.
+        chatResponse = await retryWithBackoff(() => chat.sendMessage({ message }), 1, 600);
+        
+        // Extract search grounding metadata sources
+        const chunks = chatResponse.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+        sources = chunks
+          .map((chunk: any) => ({
+            title: chunk.web?.title || chunk.web?.uri || "Web Source",
+            uri: chunk.web?.uri
+          }))
+          .filter((source: any) => source.uri);
+
+        succeeded = true;
+        console.log(`[AI Hub] Successfully generated chat with ${modelName} (Search Grounded).`);
+        break;
+      } catch (err: any) {
+        console.warn(`[AI Hub] Model ${modelName} with Search Grounding failed:`, err.message || err);
+        errorLog.push(`${modelName}(Search): ${err.message || err}`);
+      }
+    }
+
+    // Phase B: If search grounded queries fail/timeout, try standard models without search tools
+    if (!succeeded) {
+      for (const modelName of modelsToTry) {
+        try {
+          console.log(`[AI Hub] Attempting chat with model: ${modelName} (Standard Fallback)`);
+          const fallbackChat = ai.chats.create({
+            model: modelName,
+            config: {
+              systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Specialist, Tech Consultant, and General Knowledge Sovereign Advisor.
+You provide extremely precise, fast, elegant, and highly helpful answers to ANY question or request, just like ChatGPT or Claude. This includes software development & debugging, responsive visual layout designs, mathematical reasoning, translations, travel planning, marketing strategies, and academic topics, as well as specialized professional/business consultation when requested.
 CRITICAL RULE ON BRANDING: Do not talk about 'ASJi', 'Arush Sharma', or 'Saksham Sharma' in the main body. Focus purely on assisting the user. ONLY at the absolute end of your response, write:
 ---
 *Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*`,
-        },
-        history: history || []
-      });
+            },
+            history: history || []
+          });
 
-      chatResponse = await retryWithBackoff(() => fallbackChat.sendMessage({ message }), 1, 600);
+          chatResponse = await retryWithBackoff(() => fallbackChat.sendMessage({ message }), 1, 600);
+          succeeded = true;
+          console.log(`[AI Hub] Successfully generated standard chat with fallback model ${modelName}.`);
+          break;
+        } catch (err: any) {
+          console.warn(`[AI Hub] Model ${modelName} Standard Fallback failed:`, err.message || err);
+          errorLog.push(`${modelName}(Standard): ${err.message || err}`);
+        }
+      }
+    }
+
+    if (!succeeded) {
+      throw new Error(`All real-time chat models failed. Log details: ${errorLog.join(' | ')}`);
     }
 
     res.json({ success: true, text: chatResponse.text, sources });
   } catch (err: any) {
+    console.error("AI Advisor Error:", err.message || err, err);
     console.log("[Advisory Offline Engine] Routing through pre-compiled strategic briefs...");
     
     // Generate an incredibly brilliant state-backed local strategic brief as an elegant recovery mechanism
@@ -720,19 +756,37 @@ app.post('/api/ai/refine-brief', async (req, res) => {
 
   try {
     const ai = getAIClient();
+    let response: any = null;
+    let succeeded = false;
+    let errorLog: string[] = [];
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
 
-    const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `Please refine, optimize, and expand the following draft briefing details into a beautifully-structured, corporate-ready consulting brief. Provide clarity regarding technical features, compliance targets, or legal parameters. Map out a potential sequence of custom deliverables or reviews to help Arush and Saksham evaluate the scope. Return the results in beautifully polished paragraphs and bullet points. Keep it clear, executive, and highly professional.
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[AI Oracle] Generating brief with model: ${modelName}`);
+        response = await retryWithBackoff(() => ai.models.generateContent({
+          model: modelName,
+          contents: `Please refine, optimize, and expand the following draft briefing details into a beautifully-structured, corporate-ready consulting brief. Provide clarity regarding technical features, compliance targets, or legal parameters. Map out a potential sequence of custom deliverables or reviews to help Arush and Saksham evaluate the scope. Return the results in beautifully polished paragraphs and bullet points. Keep it clear, executive, and highly professional.
 
 Inquiry Type: "${inquiryType || 'General Consultative Inquiry'}"
 Draft Message: "${message}"`,
-      config: {
-        systemInstruction: "You are the Senior Operational Architect at ASJi. Your duty is to translate raw user descriptions into exquisite, professional-grade briefs complete with bullet points detailing specific technical framework requirements and governance structures.",
+          config: {
+            systemInstruction: "You are the Senior Operational Architect at ASJi. Your duty is to translate raw user descriptions into exquisite, professional-grade briefs complete with bullet points detailing specific technical framework requirements and governance structures.",
+          }
+        }), 1, 600);
+        succeeded = true;
+        break;
+      } catch (e: any) {
+        console.warn(`[AI Oracle] Model ${modelName} Brief Generation failed:`, e.message || e);
+        errorLog.push(`${modelName}: ${e.message || e}`);
       }
-    }), 2, 600);
+    }
 
-    res.json({ success: true, text: (response as any).text });
+    if (!succeeded) {
+      throw new Error(`All brief refiner models failed. Log details: ${errorLog.join(' | ')}`);
+    }
+
+    res.json({ success: true, text: response.text });
   } catch (err: any) {
     console.error("AI Refine Brief Error (using fallback):", err.message || err);
     
@@ -762,10 +816,17 @@ app.post('/api/ai/draft-contract', async (req, res) => {
   
   try {
     const ai = getAIClient();
+    let response: any = null;
+    let succeeded = false;
+    let errorLog: string[] = [];
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
 
-    const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `Please compile an exquisite formal agreement outline and legal structural draft for these specifications:
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[AI Oracle] Drafting agreement with model: ${modelName}`);
+        response = await retryWithBackoff(() => ai.models.generateContent({
+          model: modelName,
+          contents: `Please compile an exquisite formal agreement outline and legal structural draft for these specifications:
 Contract Framework Type: ${contractType || 'Consensus MoU / Agreement'}
 First Party Promoter: ${partyAName || 'Client Entity'}
 Second Party Representative: ${partyBName || 'ASJi Advisory Group'}
@@ -773,9 +834,20 @@ Legal Code Jurisdiction: ${jurisdiction || 'New Delhi, India / State Jurisdictio
 Statement of Core Deal & Mutual Conveyance: "${mainDeal || 'Corporate consulting, compliance supervision, and platform development'}"
 
 Ensure the compiled draft adheres to professional legal styling, featuring recital clauses, standard confidentiality headers, standard indemnification covenants, dispute governance channels, and mock signature lines. Deliver the entire sequence under beautiful markdown paragraphs.`,
-    }), 2, 600);
+        }), 1, 600);
+        succeeded = true;
+        break;
+      } catch (e: any) {
+        console.warn(`[AI Oracle] Model ${modelName} Drafting failed:`, e.message || e);
+        errorLog.push(`${modelName}: ${e.message || e}`);
+      }
+    }
 
-    res.json({ success: true, text: (response as any).text });
+    if (!succeeded) {
+      throw new Error(`All drafting models failed. Log details: ${errorLog.join(' | ')}`);
+    }
+
+    res.json({ success: true, text: response.text });
   } catch (err: any) {
     console.error("AI Drafting Error (using fallback):", err.message || err);
     
@@ -821,10 +893,17 @@ app.post('/api/ai/action-plan', async (req, res) => {
 
   try {
     const ai = getAIClient();
+    let response: any = null;
+    let succeeded = false;
+    let errorLog: string[] = [];
+    const modelsToTry = ["gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"];
 
-    const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `Formulate a precise internal advisory action plan and a formal SMTP email response template responding to this client inquiry:
+    for (const modelName of modelsToTry) {
+      try {
+        console.log(`[AI Oracle] Generating action plan with model: ${modelName}`);
+        response = await retryWithBackoff(() => ai.models.generateContent({
+          model: modelName,
+          contents: `Formulate a precise internal advisory action plan and a formal SMTP email response template responding to this client inquiry:
 Client Name: ${name}
 Client Contact: ${email}
 Selected Service Segment: ${service || 'General Influx'}
@@ -833,9 +912,20 @@ Inquiry Content Details: "${message}"
 Generate a 2-part structured response:
 1. INTERNAL OPERATIONS PLAYBOOK: Outline specific tasks, compliance rules, or design targets that directors Arush and Saksham should review before the intake call.
 2. SECURE EMAIL CORRESPONDENCE TEMPLATE: Craft a formal, polished greeting email reflecting our high-end, elite capabilities, addressing their inquiry details, and offering direct calendar links to book their legal/technical audit. Keep the email copyable.`,
-    }), 2, 600);
+        }), 1, 600);
+        succeeded = true;
+        break;
+      } catch (e: any) {
+        console.warn(`[AI Oracle] Model ${modelName} Action Plan failed:`, e.message || e);
+        errorLog.push(`${modelName}: ${e.message || e}`);
+      }
+    }
 
-    res.json({ success: true, text: (response as any).text });
+    if (!succeeded) {
+      throw new Error(`All action-planner models failed. Log details: ${errorLog.join(' | ')}`);
+    }
+
+    res.json({ success: true, text: response.text });
   } catch (err: any) {
     console.error("AI Action Planner Error (using fallback):", err.message || err);
     
