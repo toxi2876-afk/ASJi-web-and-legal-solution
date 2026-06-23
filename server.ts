@@ -118,7 +118,7 @@ Whether you are starting an LLP, registering for GST, claiming server tax discou
   return { text, sources };
 }
 
-const app = express();
+export const app = express();
 const PORT = 3000;
 
 app.use(express.json());
@@ -977,11 +977,15 @@ async function start() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  }
 }
 
 start().catch(err => {
   console.error("Failed to start server", err);
 });
+
+export default app;

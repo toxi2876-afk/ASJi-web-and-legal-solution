@@ -356,6 +356,10 @@ export const apiService = {
     try {
       const res = await fetch(`/api/services?t=${Date.now()}`);
       if (!res.ok) throw new Error('API server unavailable');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       if (Array.isArray(data)) return data;
       return getLocalServices();
@@ -374,6 +378,10 @@ export const apiService = {
         body: JSON.stringify(rawService)
       });
       if (!res.ok) throw new Error('API write failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Keep local storage updated too!
       const current = getLocalServices();
@@ -397,6 +405,10 @@ export const apiService = {
         body: JSON.stringify(service)
       });
       if (!res.ok) throw new Error('API update failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Sync local storage
       const current = getLocalServices().map(s => s.id === id ? { ...service, id } : s);
@@ -416,6 +428,10 @@ export const apiService = {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('API delete failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Sync local storage
       const current = getLocalServices().filter(s => s.id !== id);
@@ -434,6 +450,10 @@ export const apiService = {
     try {
       const res = await fetch(`/api/inquiries?t=${Date.now()}`);
       if (!res.ok) throw new Error('API inquiry fetch failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       if (Array.isArray(data)) return data;
       return getLocalInquiries();
@@ -460,6 +480,10 @@ export const apiService = {
         body: JSON.stringify(inquiry)
       });
       if (!res.ok) throw new Error('API inquiries submission failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Keep local storage updated
       const current = getLocalInquiries();
@@ -483,6 +507,10 @@ export const apiService = {
     try {
       const res = await fetch(`/api/notifications?t=${Date.now()}`);
       if (!res.ok) throw new Error('API notifications fetch failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       if (Array.isArray(data)) return data;
       return getLocalNotifications();
@@ -498,6 +526,10 @@ export const apiService = {
         method: 'POST'
       });
       if (!res.ok) throw new Error('API notifications clear failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       saveLocalNotifications([]);
       return data.logs || [];
@@ -516,6 +548,10 @@ export const apiService = {
         body: JSON.stringify({ status: nextStatus })
       });
       if (!res.ok) throw new Error('API update inquiry failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Keep local storage synced
       const current = getLocalInquiries().map(iq => iq.id === id ? { ...iq, status: nextStatus } : iq);
@@ -535,6 +571,10 @@ export const apiService = {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('API inquiry deletion failed');
+      const contentType = res.headers.get('content-type') || '';
+      if (contentType.includes('text/html')) {
+        throw new Error('API returned HTML instead of JSON');
+      }
       const data = await res.json();
       // Keep local storage synced
       const current = getLocalInquiries().filter(iq => iq.id !== id);
@@ -558,6 +598,10 @@ export const apiService = {
     if (!res.ok) {
       throw new Error('API AI Chat advisor connection failed');
     }
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      throw new Error('Serverless backend not reachable (returned HTML instead of JSON). Please make sure the backend is running or configured on Vercel.');
+    }
     const data = await res.json();
     return {
       text: data.text || '',
@@ -574,6 +618,10 @@ export const apiService = {
     if (!res.ok) {
       throw new Error('API AI Brief refiner failed');
     }
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      throw new Error('Serverless backend not reachable (returned HTML instead of JSON).');
+    }
     const data = await res.json();
     return data.text || '';
   },
@@ -586,6 +634,10 @@ export const apiService = {
     });
     if (!res.ok) {
       throw new Error('API AI Draft Generator failed');
+    }
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      throw new Error('Serverless backend not reachable (returned HTML instead of JSON).');
     }
     const data = await res.json();
     return data.text || '';
@@ -604,6 +656,10 @@ export const apiService = {
     });
     if (!res.ok) {
       throw new Error('API AI Action Plan playbook generation failed');
+    }
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      throw new Error('Serverless backend not reachable (returned HTML instead of JSON).');
     }
     const data = await res.json();
     return data.text || '';
