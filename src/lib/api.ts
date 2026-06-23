@@ -549,7 +549,7 @@ export const apiService = {
   },
 
   // SECURE SERVER-PROXY AI ADVISOR & COMPLIANCE TOOLS
-  askAIAdvisor: async (message: string, history?: any[]): Promise<string> => {
+  askAIAdvisor: async (message: string, history?: any[]): Promise<{ text: string; sources?: { title: string; uri: string }[] }> => {
     const res = await fetch('/api/ai/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -559,7 +559,10 @@ export const apiService = {
       throw new Error('API AI Chat advisor connection failed');
     }
     const data = await res.json();
-    return data.text || '';
+    return {
+      text: data.text || '',
+      sources: data.sources
+    };
   },
 
   refineBriefWithAI: async (message: string, inquiryType: string): Promise<string> => {

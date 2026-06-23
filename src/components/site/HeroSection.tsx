@@ -1,6 +1,8 @@
-import ThreeHero from './ThreeHero';
+import { lazy, Suspense } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+const ThreeHero = lazy(() => import('./ThreeHero'));
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -28,7 +30,9 @@ export default function HeroSection() {
 
       {/* ThreeHero 3D Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <ThreeHero />
+        <Suspense fallback={null}>
+          <ThreeHero />
+        </Suspense>
       </div>
 
       {/* Floating Sparkles particles */}
