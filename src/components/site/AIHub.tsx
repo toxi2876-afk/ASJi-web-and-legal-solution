@@ -16,27 +16,35 @@ interface Message {
 // Pre-compiled fast templates for instant, responsive scoping
 const SCOPING_TEMPLATES = [
   {
-    category: "Technical Security",
+    category: "Tech & AI Development",
     prompts: [
-      { label: "Secure SaaS Architecture", text: "Propose high-level secure tech architecture guidelines for financial SaaS apps with database isolation, CORS protection, and secure express headers." },
-      { label: "API Secret Management", text: "Detail the best practices for lazy-initializing Stripe, Firebase, and other server-side SDKs to prevent token exposure in client-side bundles." },
-      { label: "WebGL Performance", text: "How should we structure high-performance React canvases (such as Three.js / R3F) to handle dynamic container resizing properly?" }
+      { label: "AI Integration Guide", text: "What is the best design pattern to integrate Google Gemini API into a full-stack Node/Express and React application securely?" },
+      { label: "Secure API Setup", text: "Write an example showing how to lazy-initialize server-side secrets securely so that sensitive API keys are never exposed in the client code." },
+      { label: "Vite & React Bundles", text: "How can we optimize Vite config to split large dependencies (like Three.js, Lucide, motion) into separate chunk files?" }
     ]
   },
   {
-    category: "Corporate & GST Tax",
+    category: "Indian Setup & GST Tax",
     prompts: [
       { label: "0% GST Export LUT", text: "Explain the process for software exporters to file a Letter of Undertaking (LUT) under Indian GST to supply services at zero-rated 0% tax." },
       { label: "80-IAC Startup Holiday", text: "What are the exact eligibility thresholds and filing guidelines to secure the Section 80-IAC 3-year income tax exemption for startups?" },
-      { label: "Input Tax Credit (ITC)", text: "How can businesses claim 18% GST input credit on cloud infrastructure bills (GCP/AWS) to optimize capital runways?" }
+      { label: "LLP vs Pvt Ltd Guide", text: "Provide a comparative analysis checklist of an LLP versus a Private Limited Company for bootstrapped SaaS founders in India." }
     ]
   },
   {
-    category: "Corporate Setup & Law",
+    category: "Global Law & Legal Research",
     prompts: [
-      { label: "LLP vs Pvt Ltd Guide", text: "Provide a comparative analysis checklist of an LLP versus a Private Limited Company for bootstrapped SaaS founders in India." },
-      { label: "IP Assignment Terms", text: "Outline the key drafting variables needed in a 'Work-for-Hire' IP Assignment Clause to ensure absolute source code ownership reverts to the buyer." },
-      { label: "Statutory Audit Thresholds", text: "What are the latest MCA thresholds regarding mandatory audit exemptions for LLPs and Pvt Ltd companies in India?" }
+      { label: "Cross-Border SLAs", text: "Research the best way to draft limitation of liability and indemnity clauses in cross-border software service level agreements (SLAs) for global clients." },
+      { label: "IP Ownership Clauses", text: "Outline the key drafting variables needed in a 'Work-for-Hire' IP Assignment Clause to ensure absolute source code ownership reverts to the buyer." },
+      { label: "GDPR & NDA Guidelines", text: "Research legal guidelines on enforceability of NDAs protecting proprietary research and complying with EU GDPR standards." }
+    ]
+  },
+  {
+    category: "Growth & Brand Strategy",
+    prompts: [
+      { label: "SaaS Pitch Structure", text: "Propose a concise, 5-part slide deck outline for demonstrating tech innovations to seed-stage venture capitalists." },
+      { label: "SEO & Content Marketing", text: "What are the most effective organic search content strategies to draw technical engineers to a developer-focused software platform?" },
+      { label: "Brand Voice Optimization", text: "How can a bespoke engineering studio build trust through humanized, humble branding on landing pages?" }
     ]
   }
 ];
@@ -55,7 +63,7 @@ export default function AIHub() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'model',
-      text: "Welcome to the Virtual AI Research & Compliance Advisor.\n\nI provide real-time, high-fidelity insights regarding technical architecture security, cloud operations, corporate law (LLP/Pvt Ltd setup), global contract drafting, and strategic tax planning.\n\nI am fully equipped with real-time web-grounding to search current databases and provide instant, accurate guidance. Ask me any question or select one of the quick-action prompts below to begin!\n\n---\n*Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*"
+      text: "Welcome to the Virtual AI Research & Consulting Advisor.\n\nI provide real-time, high-fidelity insights on software engineering, coding templates, modern tech architectures, business growth, comprehensive legal research, contract precedents & case-law analysis, corporate law, and strategic tax planning.\n\nI am fully equipped with real-time web-grounding to fetch current facts and provide instant, accurate answers on any topic. Ask me any question or select one of the quick-action prompts below to begin!\n\n---\n*Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*"
     }
   ]);
   const [chatLoading, setChatLoading] = useState(false);
@@ -491,45 +499,6 @@ export default function AIHub() {
             {activeTab === 'chat' && (
               <div className="flex-1 flex flex-col lg:flex-row overflow-hidden w-full">
                 
-                {/* Left Side Scoping Templates Sidebar in Maximized View */}
-                {isMaximized && (
-                  <aside className="w-full lg:w-72 border-r border-gold/15 bg-secondary/15 flex flex-col p-4 shrink-0 overflow-y-auto space-y-4">
-                    <div className="border-b border-gold/15 pb-2">
-                      <h5 className="text-[10px] font-mono tracking-widest text-[#bd8a12] uppercase font-bold flex items-center gap-1.5">
-                        <Scale size={11} /> Quick Scoping Presets
-                      </h5>
-                      <p className="text-[9px] text-muted-foreground mt-0.5 font-sans leading-relaxed">Click any legal or tactical topic template below to seed the AI Advisor session immediately:</p>
-                    </div>
-
-                    <div className="space-y-4 font-sans">
-                      {SCOPING_TEMPLATES.map((category, idx) => (
-                        <div key={idx} className="space-y-1.5">
-                          <span className="text-[9px] font-mono text-gold opacity-80 uppercase tracking-widest block font-medium">
-                            📁 {category.category}
-                          </span>
-                          <div className="flex flex-col gap-1">
-                            {category.prompts.map((p, pIdx) => (
-                              <button
-                                key={pIdx}
-                                onClick={() => handleSendChatMessage(p.text)}
-                                className="text-[10px] text-left p-2 rounded bg-secondary/30 hover:bg-gold/5 border border-gold/10 hover:border-gold/30 hover:text-gold text-muted-foreground transition-all duration-150 flex items-start gap-1 justify-between group cursor-pointer"
-                              >
-                                <span className="truncate pr-1">{p.label}</span>
-                                <ArrowUpRight size={10} className="shrink-0 text-gold/40 group-hover:text-gold mt-0.5" />
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="border-t border-gold/15 pt-3 text-[9px] text-muted-foreground/60 leading-normal space-y-1.5">
-                      <p className="font-semibold text-gold/70">Advisor Integrity Assurance:</p>
-                      <p>All compliance data routed is secure and SSL proxies are enforced to guarantee zero risk of API keys leaking in browser environments.</p>
-                    </div>
-                  </aside>
-                )}
-
                 {/* Primary Chat Box Timeline */}
                 <div className="flex-1 flex flex-col overflow-hidden w-full relative">
                   
@@ -635,29 +604,6 @@ export default function AIHub() {
                       </div>
                     )}
                   </div>
-
-                  {/* Mobile-only or Collapped-Only fast recommendation chips */}
-                  {(!isMaximized && messages.length === 1) && (
-                    <div className="p-3 bg-secondary/15 border-t border-gold/10 space-y-1.5 shrink-0">
-                      <p className="text-[9px] font-mono uppercase text-muted-foreground tracking-widest px-1">Suggested Inquiries:</p>
-                      <div className="flex flex-col gap-1">
-                        <button
-                          onClick={() => handleSendChatMessage("What is the difference between an LLP and a Private Limited registration?")}
-                          className="text-[10px] text-left p-1.5 rounded bg-[#13161d] border border-gold/10 hover:border-gold/30 text-muted-foreground hover:text-gold transition-colors inline-flex justify-between items-center cursor-pointer"
-                        >
-                          <span>✦ LLP vs Pvt Ltd Setup</span>
-                          <ArrowUpRight size={10} className="shrink-0 text-gold/60" />
-                        </button>
-                        <button
-                          onClick={() => handleSendChatMessage("How does LUT work under GST to facilitate zero export taxation?")}
-                          className="text-[10px] text-left p-1.5 rounded bg-[#13161d] border border-gold/10 hover:border-gold/30 text-muted-foreground hover:text-gold transition-colors inline-flex justify-between items-center cursor-pointer"
-                        >
-                          <span>✦ GST Export LUT Filing</span>
-                          <ArrowUpRight size={10} className="shrink-0 text-gold/60" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Primary Chat Input Bar */}
                   <div className="p-3 bg-secondary/20 border-t border-gold/15 flex items-center gap-2 shrink-0">

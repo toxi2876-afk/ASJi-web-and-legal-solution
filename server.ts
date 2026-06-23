@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -653,11 +654,11 @@ app.post('/api/ai/chat', async (req, res) => {
     try {
       // Attempt chat session with Google Search grounding and automatic retry-with-backoff
       const chat = ai.chats.create({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         config: {
-          systemInstruction: `You are a highly advanced Virtual AI Executive Advisor equipped with real-time web search grounding.
-You provide extremely precise, fast, elegant, and intelligent insights about technical architectures, web security, custom compliance tools, corporate legal procedures, tax corporate filings, and financial advisory.
-Since you are fully equipped with real-time web search grounding, retrieve current facts, up-to-date filing procedures, code framework variations, or legal rulings to make your guidance extremely modern, actionable, and accurate. Keep answers executive-ready, highly professional, polite, informative, clean, and in clear markdown style with paragraphs. Mention sources where appropriate.
+          systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Master Consultant, Legal Researcher, and Scientific Advisor equipped with real-time web search grounding.
+You provide extremely precise, fast, elegant, and highly helpful answers to ANY question. This includes authoritative research on Indian business laws, MCA statutory requirements (Company/LLP), Indian Tax regimes (GST, LUT zero-rating, Income Tax Act, 80-IAC Startup Holiday), Indian Contract Act, IT Act, and RBI/FEMA regulations, alongside Global International Standards (such as US/Delaware C-Corp, GDPR/CCPA compliance, cross-border Service Level Agreements, and global tech architecture).
+No matter what question is asked, answer beautifully, direct, and fast with absolute accuracy. Combine deep reasoning with real-time web search grounding to fetch the most up-to-date facts, legal precedents, or technical standards. Always search the web when asked about law, case regulations, or real-time facts to ensure high accuracy. Mention sources where appropriate.
 CRITICAL RULE ON BRANDING: Avoid talking about 'ASJi', 'Arush Sharma', or 'Saksham Sharma' in the main body of your reply. Focus purely on guiding the client neutrally with the best answers. ONLY at the absolute end of your answer, write:
 ---
 *Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*`,
@@ -681,11 +682,10 @@ CRITICAL RULE ON BRANDING: Avoid talking about 'ASJi', 'Arush Sharma', or 'Saksh
       
       // Fallback pathway with zero tool dependencies and backoff retries to guarantee uptime
       const fallbackChat = ai.chats.create({
-        model: "gemini-3.5-flash",
+        model: "gemini-2.5-flash",
         config: {
-          systemInstruction: `You are a highly advanced Virtual AI Executive Advisor.
-You provide extremely precise, elegant, and intelligent insights about technical architectures, web security, custom compliance tools, corporate legal procedures, tax structure checklists, and financial advisory.
-Keep answers executive-ready, highly professional, polite, informative, clean, and in clear markdown style with paragraphs.
+          systemInstruction: `You are an incredibly versatile, highly advanced Virtual AI Master Consultant, Legal Researcher, and Scientific Advisor.
+You provide extremely precise, fast, elegant, and highly helpful answers to ANY query. You help with authoritative research on Indian business laws, MCA corporate setups, Indian tax guidelines (GST, LUT, 80-IAC, IT Act), FEMA compliance, as well as International Standards (such as Delaware C-Corp, GDPR compliance, cross-border Service Level Agreements, and general software system layouts) with supreme precision.
 CRITICAL RULE ON BRANDING: Do not talk about 'ASJi', 'Arush Sharma', or 'Saksham Sharma' in the main body. Focus purely on assisting the user. ONLY at the absolute end of your response, write:
 ---
 *Guidance facilitated by ASJi Operational Advisory Hub, established by founders Arush Sharma and Saksham Sharma.*`,
@@ -722,7 +722,7 @@ app.post('/api/ai/refine-brief', async (req, res) => {
     const ai = getAIClient();
 
     const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: `Please refine, optimize, and expand the following draft briefing details into a beautifully-structured, corporate-ready consulting brief. Provide clarity regarding technical features, compliance targets, or legal parameters. Map out a potential sequence of custom deliverables or reviews to help Arush and Saksham evaluate the scope. Return the results in beautifully polished paragraphs and bullet points. Keep it clear, executive, and highly professional.
 
 Inquiry Type: "${inquiryType || 'General Consultative Inquiry'}"
@@ -764,7 +764,7 @@ app.post('/api/ai/draft-contract', async (req, res) => {
     const ai = getAIClient();
 
     const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: `Please compile an exquisite formal agreement outline and legal structural draft for these specifications:
 Contract Framework Type: ${contractType || 'Consensus MoU / Agreement'}
 First Party Promoter: ${partyAName || 'Client Entity'}
@@ -823,7 +823,7 @@ app.post('/api/ai/action-plan', async (req, res) => {
     const ai = getAIClient();
 
     const response = await retryWithBackoff(() => ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: `Formulate a precise internal advisory action plan and a formal SMTP email response template responding to this client inquiry:
 Client Name: ${name}
 Client Contact: ${email}
