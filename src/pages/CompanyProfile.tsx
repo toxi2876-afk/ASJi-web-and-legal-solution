@@ -29,6 +29,7 @@ import {
   Download
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ProjectsShowcase from '../components/site/ProjectsShowcase';
 
 interface Slide {
   id: number;
@@ -49,10 +50,10 @@ export default function CompanyProfile() {
       if (viewMode !== 'deck') return;
       if (e.key === 'ArrowRight' || e.key === 'Space') {
         e.preventDefault();
-        setCurrentSlide(prev => (prev < 9 ? prev + 1 : 0));
+        setCurrentSlide(prev => (prev < 10 ? prev + 1 : 0));
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        setCurrentSlide(prev => (prev > 0 ? prev - 1 : 9));
+        setCurrentSlide(prev => (prev > 0 ? prev - 1 : 10));
       }
     };
 
@@ -134,9 +135,16 @@ export default function CompanyProfile() {
       subtitle: "A structured, client-centered roadmap.",
       category: "Execution",
     },
-    // PAGE 10: FOUNDER & VALUES
+    // PAGE 10: FEATURED PROJECTS
     {
       id: 10,
+      title: "Featured Real Projects",
+      subtitle: "Bespoke digital transformations and precise legal execution.",
+      category: "Case Studies",
+    },
+    // PAGE 11: FOUNDER & VALUES
+    {
+      id: 11,
       title: "Our Values & Founder",
       subtitle: "Led by Arush Sharma — Professionalism and integrity at core.",
       category: "Leadership & Contact",
@@ -259,7 +267,7 @@ export default function CompanyProfile() {
                   {slidesData[currentSlide].category}
                 </span>
                 <span className="text-xs font-mono text-muted-foreground">
-                  PAGE {currentSlide + 1} OF 10
+                  PAGE {currentSlide + 1} OF {slidesData.length}
                 </span>
               </div>
 
@@ -661,8 +669,27 @@ export default function CompanyProfile() {
                   </div>
                 )}
 
-                {/* 10. FOUNDER & VALUE SYSTEMS SLIDE */}
+                {/* 10. FEATURED PROJECTS SLIDE */}
                 {currentSlide === 9 && (
+                  <div className="space-y-4 animate-reveal">
+                    <div className="flex items-center justify-between gap-3 mb-1">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gold/15 flex items-center justify-center">
+                          <Briefcase size={20} className="text-gold" />
+                        </div>
+                        <div>
+                          <h3 className="font-display text-2xl font-bold text-pink-400">Success Stories &amp; Live Visual Sandboxes</h3>
+                          <p className="text-xs text-muted-foreground">Real deployed client platforms featuring interactive logic simulators</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <ProjectsShowcase />
+                  </div>
+                )}
+
+                {/* 11. FOUNDER & VALUE SYSTEMS SLIDE */}
+                {currentSlide === 10 && (
                   <div className="grid md:grid-cols-5 gap-6 animate-reveal">
                     
                     {/* Founder Brief Card */}
@@ -721,7 +748,7 @@ export default function CompanyProfile() {
               {/* SLIDE DECK BOTTOM BAR CARD CONTROLS */}
               <div className="flex items-center justify-between border-t border-gold/10 pt-4 mt-6 z-10 font-mono text-xs">
                 <button
-                  onClick={() => setCurrentSlide(prev => (prev > 0 ? prev - 1 : 9))}
+                  onClick={() => setCurrentSlide(prev => (prev > 0 ? prev - 1 : 10))}
                   className="flex items-center gap-1 text-muted-foreground hover:text-gold transition-colors cursor-pointer"
                 >
                   <ArrowLeft size={14} />
@@ -736,7 +763,7 @@ export default function CompanyProfile() {
                 </div>
 
                 <button
-                  onClick={() => setCurrentSlide(prev => (prev < 9 ? prev + 1 : 0))}
+                  onClick={() => setCurrentSlide(prev => (prev < 10 ? prev + 1 : 0))}
                   className="flex items-center gap-1 text-muted-foreground hover:text-gold transition-colors cursor-pointer"
                 >
                   <span>NEXT</span>
@@ -882,6 +909,16 @@ export default function CompanyProfile() {
               </div>
             </div>
 
+            {/* Case Studies / Success Stories Section */}
+            <div className="space-y-6">
+              <div className="text-center">
+                <h3 className="font-display text-3xl font-bold text-pink-400">Featured Real Projects</h3>
+                <p className="text-xs text-muted-foreground mt-1">Proven web development and tech-legal systems that build absolute client trust</p>
+              </div>
+
+              <ProjectsShowcase />
+            </div>
+
             {/* Slide 5: Industries & Process */}
             <div className="grid md:grid-cols-2 gap-6">
               <div className="glass-dark border border-gold/15 rounded-2xl p-6 md:p-8 space-y-4">
@@ -1008,7 +1045,7 @@ export default function CompanyProfile() {
               </div>
               <div className="text-right">
                 <span className="font-mono text-xs text-neutral-500">{slide.category}</span>
-                <p className="font-mono text-[10px] text-neutral-500">PAGE {sIdx + 1} OF 10</p>
+                <p className="font-mono text-[10px] text-neutral-500">PAGE {sIdx + 1} OF {slidesData.length}</p>
               </div>
             </div>
 
@@ -1248,8 +1285,91 @@ export default function CompanyProfile() {
                 </div>
               )}
 
-              {/* Founder Print */}
+              {/* Featured Case Studies Print */}
               {sIdx === 9 && (
+                <div className="space-y-6">
+                  <h2 className="font-serif text-4xl font-bold text-black border-b border-black pb-2">💼 Featured Real Projects</h2>
+                  <p className="text-sm text-neutral-800 leading-relaxed">
+                    Custom-built web platforms, SEO, and financial/legal-tech automation systems deployed to establish absolute market trust.
+                  </p>
+                  <div className="grid grid-cols-3 gap-6 pt-2">
+                    <div className="p-4 border border-black/20 rounded flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] uppercase font-mono tracking-wider font-bold text-neutral-500">PROJECT 1</span>
+                          <span className="text-[10px] font-serif font-bold">CA Ankit Jakhotiya</span>
+                        </div>
+                        <h4 className="font-serif text-sm font-bold text-black">Ankit Jakhotiya &amp; Co. Portal</h4>
+                        <p className="text-[11px] text-neutral-600 leading-normal font-sans">
+                          An elite corporate finance and advisory portal built for CA Ankit Jakhotiya (ankitjakhotiya.com), featuring tax screening and audit threshold estimation tools.
+                        </p>
+                        <div className="space-y-1 pt-1">
+                          <p className="text-[9px] font-mono font-bold uppercase tracking-wider">&bull; Core Solutions:</p>
+                          <p className="text-[9px] text-neutral-600 font-sans leading-normal pl-2">
+                            - Presumptive taxation screening rules.<br />
+                            - Accelerated 1.1s performance index.<br />
+                            - Comprehensive SEO structure.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-black/10 mt-3 text-[10px] font-mono font-bold text-black">
+                        Result: +180% Organic Reach
+                      </div>
+                    </div>
+
+                    <div className="p-4 border border-black/20 rounded flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] uppercase font-mono tracking-wider font-bold text-neutral-500">PROJECT 2</span>
+                          <span className="text-[10px] font-serif font-bold">Malhotra &amp; Associates</span>
+                        </div>
+                        <h4 className="font-serif text-sm font-bold text-black">Sovereign Law Firm Portal &amp; Onboarding</h4>
+                        <p className="text-[11px] text-neutral-600 leading-normal font-sans">
+                          A premium digital advocate chamber portal with structural schema markups, local search optimization, and automated case screening.
+                        </p>
+                        <div className="space-y-1 pt-1">
+                          <p className="text-[9px] font-mono font-bold uppercase tracking-wider">&bull; Core Solutions:</p>
+                          <p className="text-[9px] text-neutral-600 font-sans leading-normal pl-2">
+                            - Client brief triage and qualification.<br />
+                            - CRM scheduling integrations.<br />
+                            - Highly secure file log cache.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-black/10 mt-3 text-[10px] font-mono font-bold text-black">
+                        Result: +140% Client Leads
+                      </div>
+                    </div>
+
+                    <div className="p-4 border border-black/20 rounded flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[9px] uppercase font-mono tracking-wider font-bold text-neutral-500">PROJECT 3</span>
+                          <span className="text-[10px] font-serif font-bold">Vance Circles Co.</span>
+                        </div>
+                        <h4 className="font-serif text-sm font-bold text-black">AutoDoc Drafting &amp; Contract Suite</h4>
+                        <p className="text-[11px] text-neutral-600 leading-normal font-sans">
+                          An interactive draft review workspace featuring automatic agreement generators, case index lookup tools, and digital bio profiles.
+                        </p>
+                        <div className="space-y-1 pt-1">
+                          <p className="text-[9px] font-mono font-bold uppercase tracking-wider">&bull; Core Solutions:</p>
+                          <p className="text-[9px] text-neutral-600 font-sans leading-normal pl-2">
+                            - Contract template compiler generators.<br />
+                            - Precedent rules index databases.<br />
+                            - 90% faster turnaround.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="pt-2 border-t border-black/10 mt-3 text-[10px] font-mono font-bold text-black">
+                        Result: 90% Faster Drafting
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Founder Print */}
+              {sIdx === 10 && (
                 <div className="grid grid-cols-5 gap-8">
                   <div className="col-span-2 p-5 border-2 border-black rounded flex flex-col justify-between">
                     <div>
