@@ -7,7 +7,6 @@ import TestimonialsSection from '../components/site/TestimonialsSection';
 import FAQSection from '../components/site/FAQSection';
 import ContactSection from '../components/site/ContactSection';
 import Footer from '../components/site/Footer';
-import AIHub from '../components/site/AIHub';
 import ReadingProgressBar from '../components/site/ReadingProgressBar';
 
 export default function IndexPage() {
@@ -23,7 +22,6 @@ export default function IndexPage() {
       <FAQSection />
       <ContactSection />
       <Footer />
-      <AIHub />
     </div>
   );
 }
