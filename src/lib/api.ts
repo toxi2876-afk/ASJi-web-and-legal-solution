@@ -288,7 +288,7 @@ const initialInquiries: Inquiry[] = [
 ];
 
 // LocalStorage helpers to simulate database operations on purely static hosts
-const STORAGE_SERVICES_KEY = 'asji_local_services';
+const STORAGE_SERVICES_KEY = 'asji_local_services_v3';
 const STORAGE_INQUIRIES_KEY = 'asji_local_inquiries';
 
 function getLocalServices(): Service[] {
