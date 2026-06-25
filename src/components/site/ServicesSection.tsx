@@ -379,6 +379,13 @@ export default function ServicesSection() {
             </div>
           </div>
         )}
+
+        {/* Professional Pricing Disclaimer */}
+        <div className="mt-12 text-center select-none opacity-80 reveal section-hidden" style={{ transitionDelay: '0.4s' }}>
+          <p className="text-[11px] font-mono text-muted-foreground/80 italic tracking-wider max-w-2xl mx-auto leading-relaxed border-t border-gold/10 pt-6">
+            * prices are indicative and may vary depending on project requirements. Final pricing will be confirmed after consultation.
+          </p>
+        </div>
       </div>
     </section>
   );
